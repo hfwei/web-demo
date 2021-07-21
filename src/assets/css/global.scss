@@ -1,0 +1,50 @@
+body {
+}
+
+input {
+  outline-style: none;
+  border: 0;
+  border-bottom: 1px solid #E9E9E9;
+  background-color: transparent;
+  height: 20px;
+  font-family: sans-serif;
+  font-size: 15px;
+  color: #445b53;
+  font-weight: bold;
+}
+
+input:focus {
+  border-bottom: 2px solid #445b53;
+  background-color: transparent;
+  transition: all 0.2s ease-in;
+  font-family: sans-serif;
+  font-size: 15px;
+  color: #445b53;
+  font-weight: bold;
+
+}
+
+input:hover {
+  border-bottom: 2px solid #445b53;
+  background-color: transparent;
+  transition: all 0.2s ease-in;
+  font-family: sans-serif;
+  font-size: 15px;
+  color: #445b53;
+  font-weight: bold;
+
+}
+
+input:-webkit-autofill {
+  /* 修改默认背景框的颜色 */
+  box-shadow: 0 0 0 1000px #89AB9E inset !important;
+  /* 修改默认字体的颜色 */
+  -webkit-text-fill-color: #445b53;
+}
+
+input:-webkit-autofill::first-line {
+  /* 修改默认字体的大小 */
+  font-size: 15px;
+  /* 修改默认字体的样式 */
+  font-weight: bold;
+}
