@@ -1,6 +1,6 @@
+import {message} from "ant-design-vue"
 import axios from 'axios'
-// 使用element-ui Message做消息提醒
-import {ElLoading, ElMessage} from 'element-plus';
+import store from "@/store/store";
 //1. 创建新的axios实例，
 const service = axios.create({
     // 公共接口--这里注意后面会讲
@@ -11,7 +11,8 @@ const service = axios.create({
 // 2.请求拦截器
 service.interceptors.request.use(config => {
     //显示加载动画
-    showLoading()
+    // showLoading()
+    store.commit('showLoading')
     //发请求前做的一些处理，数据转化，配置请求头，设置token,设置loading等，根据需求去添加
     // config.data = JSON.stringify(config.data); //数据转化,也可以使用qs转换
     config.headers = {
@@ -25,20 +26,26 @@ service.interceptors.request.use(config => {
     // }
     return config
 }, error => {
+    console.log(`request error:`, error)
     //隐藏加载动画
-    hideLoading()
+    // hideLoading()
+    store.commit('hideLoading')
     return Promise.reject(error)
 })
 
 // 3.响应拦截器
 service.interceptors.response.use(response => {
+    console.log(`response success:`, response)
     //隐藏加载动画
-    hideLoading()
-    //接收到响应数据并成功后的一些共有的处理，关闭loading等
+    // hideLoading()
+    store.commit('hideLoading')
+//接收到响应数据并成功后的一些共有的处理，关闭loading等
     return response
 }, error => {
+    console.log(`response error:`, error)
     //隐藏加载动画
-    hideLoading()
+    // hideLoading()
+    store.commit('hideLoading')
     /***** 接收到异常响应的处理开始 *****/
     if (error && error.response) {
         // 1.公共错误处理
@@ -87,19 +94,21 @@ service.interceptors.response.use(response => {
     } else {
         // 超时处理
         if (JSON.stringify(error).includes('timeout')) {
-            ElMessage.error('服务器响应超时，请刷新当前页')
+            error.message = '服务器响应超时，请刷新当前页'
+        } else {
+            error.message = '连接服务器失败'
         }
-        error.message = '连接服务器失败'
     }
 
-    ElMessage.error(error.message)
+    message.error(error.message)
     /***** 处理结束 *****/
     //如果不需要错误处理，以上的处理过程都可省略
-    return Promise.resolve(error.response)
+    return Promise.reject(error)
 })
 //4.导入文件
 export default service
 
+/*
 let loading;
 let loadingCount = 0;
 
@@ -130,4 +139,4 @@ function hideLoading() {
 
 function endLoading() {
     loading.close();
-}
+}*/
