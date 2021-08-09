@@ -8,13 +8,7 @@
       </div>
       <div class="div-content">
         <div class="div-select-languages">
-          <a-select
-              v-model:value="language"
-              @focus="focus"
-              @change="handleChange">
-            <a-select-option value="zh-CN">{{ $t('login.chinese') }}</a-select-option>
-            <a-select-option value="en-US">{{ $t('login.english') }}</a-select-option>
-          </a-select>
+          <LanguageSelect/>
         </div>
         <div class="div-form-register">
           <a-form
@@ -89,75 +83,81 @@
 </template>
 
 <script>
-import {Modal} from "ant-design-vue"
-import {UserOutlined, LockOutlined, CheckCircleOutlined} from '@ant-design/icons-vue'
+import {Modal} from "ant-design-vue";
+import {UserOutlined, LockOutlined, CheckCircleOutlined} from "@ant-design/icons-vue";
 import {register} from "@/api/userApi";
 import LoginCarousel from "@/components/LoginCarousel";
-import {getCurrentInstance, reactive, ref, toRaw, createVNode} from "vue";
+import {getCurrentInstance, reactive, ref, toRaw, createVNode, onMounted, onUnmounted} from "vue";
+import LanguageSelect from "@/components/LanguageSelect";
+import bus from "@/utils/bus";
 // import {useRouter} from "vue-router";
 
 export default {
   name: "Login",
   components: {
+    LoginCarousel,
+    LanguageSelect,
     UserOutlined,
-    LockOutlined,
-    LoginCarousel
+    LockOutlined
   },
   setup() {
-    // 语言选择
-    const {proxy} = getCurrentInstance();
-    const language = ref('zh-CN');
-    const focus = () => {
-      console.log(`focus. language: ${language.value}`);
-    };
-    const handleChange = (value) => {
-      console.info(`selected ${value}`);
-      console.log(`focus. language: ${language.value}`);
-      proxy.$i18n.locale = value;
-    };
+    onMounted(() => {
+      console.log(`Register mounted!`);
+      bus.$on("changeLanguage", data => {
+        console.log(`changeLanguage. data:`, data);
+        registerFormRef.value.resetFields();
+      })
+    });
 
-    // 登录
+    onUnmounted(() => {
+      console.log(`Register unmounted!`);
+      bus.$off("changeLanguage");
+    });
+
+    const {proxy} = getCurrentInstance();
+
+    // 注册
     const registerFormRef = ref();
     const registerFormData = reactive({
-      username: '',
-      password: '',
-      confirmPassword: ''
+      username: "",
+      password: "",
+      confirmPassword: ""
     });
     let checkUsername = async (rule, value) => {
       console.info(`checkUsername. rule:${rule}, value:${value}`);
       if (!value) {
-        return Promise.reject(proxy.$t('login.username.tip1'))
+        return Promise.reject(proxy.$t("login.username.tip1"));
       } else if (value.length < 5) {
-        return Promise.reject(proxy.$t('login.username.tip2'))
+        return Promise.reject(proxy.$t("login.username.tip2"));
       } else if (value.length > 10) {
-        return Promise.reject(proxy.$t('login.username.tip3'))
+        return Promise.reject(proxy.$t("login.username.tip3"));
       } else {
-        return Promise.resolve()
+        return Promise.resolve();
       }
     };
-    const passwordReg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,32}/
+    const passwordReg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,32}/;
     let checkPassword = async (rule, value) => {
       console.info(`checkPassword. rule:${rule}, value:${value}`);
       if (!value) {
-        return Promise.reject(proxy.$t('login.password.tip1'))
+        return Promise.reject(proxy.$t("login.password.tip1"));
       } else if (value.length < 8) {
-        return Promise.reject(proxy.$t('login.password.tip2'))
+        return Promise.reject(proxy.$t("login.password.tip2"));
       } else if (value.length > 32) {
-        return Promise.reject(proxy.$t('login.password.tip3'))
+        return Promise.reject(proxy.$t("login.password.tip3"));
       } else if (!passwordReg.test(value)) {
-        return Promise.reject(proxy.$t('login.password.tip4'))
+        return Promise.reject(proxy.$t("login.password.tip4"));
       } else {
-        return Promise.resolve()
+        return Promise.resolve();
       }
     };
     let confirmPassword = async (rule, value) => {
       console.info(`checkCode. rule:${rule}, value:${value}`);
       if (!value) {
-        return Promise.reject(proxy.$t('login.password.tip1'))
+        return Promise.reject(proxy.$t("login.password.tip1"));
       } else if (value !== registerFormData.password) {
-        return Promise.reject(proxy.$t('register.tip.inconsistent'))
+        return Promise.reject(proxy.$t("register.tip.inconsistent"));
       } else {
-        return Promise.resolve()
+        return Promise.resolve();
       }
     };
     const registerFormRules = {
@@ -165,21 +165,21 @@ export default {
         {
           required: true,
           validator: checkUsername,
-          trigger: 'blur',
+          trigger: "blur"
         }
       ],
       password: [
         {
           required: true,
           validator: checkPassword,
-          trigger: 'blur',
+          trigger: "blur"
         }
       ],
       confirmPassword: [
         {
           required: true,
           validator: confirmPassword,
-          trigger: 'blur',
+          trigger: "blur"
         }
       ],
     };
@@ -191,8 +191,8 @@ export default {
       console.info(`handleFinish`, toRaw(registerFormData));
       loading.value = true;
       let formData = new FormData();
-      formData.set('username', registerFormData.username);
-      formData.set('password', registerFormData.password);
+      formData.set("username", registerFormData.username);
+      formData.set("password", registerFormData.password);
       register(formData)
           .then(response => {
             console.log(response);
@@ -202,17 +202,17 @@ export default {
             console.log(error);
           })
           .finally(() => {
-            console.log('finally');
+            console.log(`finally`);
             loading.value = false;
           });
     };
     const registerSuccess = () => {
       Modal.confirm({
-        title: proxy.$t('register.tip.success'),
+        title: proxy.$t("register.tip.success"),
         icon: createVNode(CheckCircleOutlined),
-        content: proxy.$t('register.tip.goLogin'),
-        okText: proxy.$t('tip.confirm'),
-        cancelText: proxy.$t('tip.cancel'),
+        content: proxy.$t("register.tip.goLogin"),
+        okText: proxy.$t("tip.confirm"),
+        cancelText: proxy.$t("tip.cancel"),
         onOk() {
           proxy.$router.push({
             name: "login",
@@ -235,9 +235,6 @@ export default {
       })
     };
     return {
-      language,
-      focus,
-      handleChange,
       registerFormRef,
       registerFormData,
       registerFormRules,
@@ -245,7 +242,7 @@ export default {
       handleFinishFailed,
       handleFinish,
       registerSuccess,
-      goLoginPage,
+      goLoginPage
     };
   },
 }

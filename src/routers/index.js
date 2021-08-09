@@ -8,27 +8,31 @@ const routes = [
     {
         path: "/register",
         name: "register",
-        component: () => import('../components/RegisterNew'),
+        component: () => import('../views/RegisterNew'),
+        meta: {requiresAuth: false}
     },
     {
         path: "/login",
         name: "login",
-        component: () => import('../components/LoginNew')
+        component: () => import('../views/LoginNew'),
+        meta: {requiresAuth: false}
     },
     {
         path: "/home",
         name: "home",
-        component: () => import('../components/Home')
+        component: () => import('../views/Home'),
+        meta: {requiresAuth: true}
     }, {
         path: "/test",
         name: "test",
-        component: () => import('../components/Test')
+        component: () => import('../views/Test'),
+        meta: {requiresAuth: true}
     }
-]
+];
 
-const index = createRouter({
+const router = createRouter({
     history: createWebHashHistory(),
     routes
-})
+});
 
-export default index;
+export default router;

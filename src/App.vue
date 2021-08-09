@@ -11,10 +11,11 @@
 </template>
 
 <script>
-import {computed, ref} from "vue"
+import {computed, getCurrentInstance, onMounted, ref} from "vue"
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import moment from "moment"
 import store from "@/store/store";
+import bus from "@/utils/bus";
 
 moment.locale("zh-cn")
 
@@ -24,6 +25,19 @@ export default {
     // HelloWorld
   },
   setup() {
+    const {proxy} = getCurrentInstance();
+
+    onMounted(() => {
+      console.log(`App mounted.`);
+      localStorage.setItem("language", "zh-CN");
+
+      bus.$on("setLanguage", data => {
+        console.log(`setLanguage. data:`, data);
+        proxy.$i18n.locale = data;
+        localStorage.setItem("language", data);
+      })
+    });
+
     const collapsed = ref(false)
     const locale = ref(zhCN)
     const spinning = computed(() => {

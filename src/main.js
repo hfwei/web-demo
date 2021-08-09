@@ -1,20 +1,39 @@
-import {createApp} from 'vue';
-import App from './App.vue'
-import Antd from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.css'
-import index from "@/routers";
+import {createApp} from "vue";
+import App from "./App.vue";
+import Antd from "ant-design-vue";
+import "ant-design-vue/dist/antd.css";
+import router from "@/routers";
 import store from "@/store/store";
 import i18n from "../public/languages";
-import {defaults} from "axios";
+import axios from "axios";
 // import {Base64} from "js-base64";
+import NProgress from "nprogress";
+import "nprogress/nprogress.css"
 
-defaults.withCredentials = true
+axios.defaults.withCredentials = true;
+
+router.beforeEach((to, from) => {
+    console.log(`router beforeEach. to:${to}, from:${from}`);
+    console.log(`router to matched:`, to.matched.length);
+    NProgress.start();
+    if (to.meta.requiresAuth && !store.state.isLogin) {
+        return {
+            path: "/login",
+            query: {redirect: to.fullPath}
+        };
+    } else {
+        return true;
+    }
+});
+
+router.afterEach(() => {
+    NProgress.done();
+});
 
 createApp(App)
-    // .use(ElementPlus)
     .use(i18n)
     .use(Antd)
-    .use(index)
+    .use(router)
     .use(store)
     // .use(Base64)
-    .mount('#app')
+    .mount("#app");
