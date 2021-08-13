@@ -1,5 +1,5 @@
 module.exports = {
-    title: '后台管理平台',
+    title: '后台管理系统',
     login: {
         title: '用户登录',
         chinese: '中文',
@@ -44,6 +44,7 @@ module.exports = {
     },
     home: {
         hello: '你好！',
+        title: '管理系统',
     },
     tip: {
         confirm: '确认',

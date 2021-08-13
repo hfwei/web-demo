@@ -1,13 +1,28 @@
 <template>
-  <a-spin ref="a-spin" class="loading" :spinning="$store.state.isLoading" tip="loading..."></a-spin>
-  <div {{readersNumber}}{{book.title}}></div>
+  <div>123456</div>
+  <div style="width: 800px; height: 100px; border: 2px solid red; display: flex; align-items: flex-start">
+    <font-awesome-icon style="color: #0088cc" :icon="['far', 'user']"/>
+    <i class="material-icons icon">face</i>
+    <span class="material-icons icon">person</span>
+    <span class="material-icons icon">person_outline</span>
+    <UserOutlined style="color:#0088cc"/>
+    <span class="material-icons icon">lock</span>
+    <span class="material-icons icon">lock_outline</span>
+    <span class="material-icons icon">verified_user</span>
+    <span class="material-icons icon" style="font-size: 20px">verified_user</span>
+    <span class="material-icons-outline" style="color: #0088cc">privacy_tip</span>
+  </div>
+  <!--  <a-spin ref="a-spin" class="loading" :spinning="$store.state.isLoading" tip="loading..."></a-spin>-->
+  <!--  <div {{readersNumber}}{{book.title}}></div>-->
 </template>
 
 <script>
 import {reactive, ref, unref, toRef, toRefs, computed, watch, h} from 'vue';
+import {UserOutlined} from "@ant-design/icons-vue"
 
 export default {
   name: "Test",
+  components: {UserOutlined},
   setup() {
     // const state = reactive({count: 0})
     // watchEffect(() => {
@@ -105,5 +120,11 @@ export default {
 
 .bg-purple {
   background: purple;
+}
+
+.icon {
+  color: #0088cc;
+  border: 1px solid red;
+  padding: 0;
 }
 </style>

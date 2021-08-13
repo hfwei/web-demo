@@ -24,10 +24,11 @@
             <a-form-item class="item" name="username">
               <a-input
                   v-model:value="registerFormData.username"
+                  style="height: 40px"
                   size="large"
                   :placeholder="$t('login.username.placeholder')">
                 <template #prefix>
-                  <UserOutlined style="color:#0088cc"/>
+                  <span class="material-icons" style="color: #0088cc">person</span>
                 </template>
               </a-input>
             </a-form-item>
@@ -35,11 +36,12 @@
               <a-input-password
                   v-model:value="registerFormData.password"
                   type="password"
+                  style="height: 40px"
                   size="large"
                   autocomplete="off"
                   :placeholder="$t('login.password.placeholder')">
                 <template #prefix>
-                  <LockOutlined style="color:#0088cc"/>
+                  <span class="material-icons" style="color: #0088cc; font-size: 22px">lock</span>
                 </template>
               </a-input-password>
             </a-form-item>
@@ -47,11 +49,12 @@
               <a-input-password
                   v-model:value="registerFormData.confirmPassword"
                   type="password"
+                  style="height: 40px"
                   size="large"
                   autocomplete="off"
                   :placeholder="$t('register.tip.confirm')">
                 <template #prefix>
-                  <LockOutlined style="color:#0088cc"/>
+                  <span class="material-icons" style="color: #0088cc; font-size: 22px">lock</span>
                 </template>
               </a-input-password>
             </a-form-item>
@@ -84,7 +87,7 @@
 
 <script>
 import {Modal} from "ant-design-vue";
-import {UserOutlined, LockOutlined, CheckCircleOutlined} from "@ant-design/icons-vue";
+import {CheckCircleOutlined} from "@ant-design/icons-vue";
 import {register} from "@/api/userApi";
 import LoginCarousel from "@/components/LoginCarousel";
 import {getCurrentInstance, reactive, ref, toRaw, createVNode, onMounted, onUnmounted} from "vue";
@@ -96,9 +99,7 @@ export default {
   name: "Login",
   components: {
     LoginCarousel,
-    LanguageSelect,
-    UserOutlined,
-    LockOutlined
+    LanguageSelect
   },
   setup() {
     onMounted(() => {

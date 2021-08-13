@@ -43,7 +43,8 @@ module.exports = {
         },
     },
     home: {
-        hello: 'Hello World!'
+        hello: 'Hello World!',
+        title: 'Management',
     },
     tip: {
         confirm: 'confirm',

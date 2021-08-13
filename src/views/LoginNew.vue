@@ -24,33 +24,42 @@
             <a-form-item name="username">
               <a-input
                   v-model:value="loginFormData.username"
+                  style="height: 40px"
                   size="large"
-                  :placeholder="$t('login.username.placeholder')">
+                  :placeholder="$t('login.username.placeholder')"
+                  allow-clear>
                 <template #prefix>
-                  <UserOutlined style="color:#0088cc"/>
+                  <span class="material-icons" style="color: #0088cc">person</span>
+                  <!--                  <font-awesome-icon style="color: #0088cc" :icon="['far', 'user']"/>-->
+                  <!--                  <UserOutlined style="color:#0088cc"/>-->
                 </template>
               </a-input>
             </a-form-item>
             <a-form-item name="password">
               <a-input-password
                   v-model:value="loginFormData.password"
+                  style="height: 40px"
                   type="password"
                   size="large"
                   autocomplete="off"
-                  :placeholder="$t('login.password.placeholder')">
+                  :placeholder="$t('login.password.placeholder')"
+                  allow-clear>
                 <template #prefix>
-                  <LockOutlined style="color:#0088cc"/>
+                  <span class="material-icons" style="color: #0088cc; font-size: 22px">lock</span>
+                  <!--                  <LockOutlined style="color:#0088cc"/>-->
                 </template>
               </a-input-password>
             </a-form-item>
             <a-form-item name="code">
               <a-input
                   v-model:value="loginFormData.code"
-                  style="width: 150px"
+                  style="width: 150px; height: 40px"
                   size="large"
-                  :placeholder="$t('login.code.placeholder')">
+                  :placeholder="$t('login.code.placeholder')"
+                  allow-clear>
                 <template #prefix>
-                  <SafetyOutlined style="color:#0088cc"/>
+                  <span class="material-icons" style="color: #0088cc; font-size: 20px">verified_user</span>
+                  <!--                  <SafetyOutlined style="color:#0088cc"/>-->
                 </template>
               </a-input>
               <div
@@ -97,7 +106,6 @@
 
 <script>
 import {message} from "ant-design-vue"
-import {UserOutlined, LockOutlined, SafetyOutlined} from '@ant-design/icons-vue'
 import {login} from "@/api/userApi";
 import LoginCarousel from "@/components/LoginCarousel";
 import {getCurrentInstance, onMounted, onUnmounted, reactive, ref, toRaw} from "vue";
@@ -110,10 +118,7 @@ export default {
   name: "Login",
   components: {
     LoginCarousel,
-    LanguageSelect,
-    UserOutlined,
-    LockOutlined,
-    SafetyOutlined
+    LanguageSelect
   },
   setup() {
     onMounted(() => {

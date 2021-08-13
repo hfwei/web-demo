@@ -9,6 +9,7 @@ import axios from "axios";
 // import {Base64} from "js-base64";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css"
+import "material-design-icons-iconfont/dist/material-design-icons.css"
 
 axios.defaults.withCredentials = true;
 
