@@ -1,7 +1,17 @@
 <template>
+  <TestComponent
+      ref="childRef"
+      v-model:username="username"
+      :password="password"
+      @update-password="updatePassword"/>
+  <button :disabled="disable">Button</button>
+  <div v-for="(item, i) in list"
+       :key="i"
+       :ref="el => { if (el) divs[i] = el }">
+    {{ item }}
+  </div>
   <div>123456</div>
   <div style="width: 800px; height: 100px; border: 2px solid red; display: flex; align-items: flex-start">
-    <font-awesome-icon style="color: #0088cc" :icon="['far', 'user']"/>
     <i class="material-icons icon">face</i>
     <span class="material-icons icon">person</span>
     <span class="material-icons icon">person_outline</span>
@@ -17,13 +27,21 @@
 </template>
 
 <script>
-import {reactive, ref, unref, toRef, toRefs, computed, watch, h} from 'vue';
+import {reactive, ref, unref, toRef, toRefs, computed, watch, onMounted, provide, onBeforeUpdate} from 'vue';
 import {UserOutlined} from "@ant-design/icons-vue"
+import TestComponent from "../components/TestComponent";
 
 export default {
   name: "Test",
-  components: {UserOutlined},
+  components: {TestComponent, UserOutlined},
   setup() {
+    onMounted(() => {
+      console.log(`childRef:`, childRef);
+      console.log(`childRef value:`, childRef.value);
+
+      console.log(`divs:`, divs);
+    })
+
     // const state = reactive({count: 0})
     // watchEffect(() => {
     //   console.log(state.count)
@@ -86,23 +104,52 @@ export default {
     const readersNumber = ref(0)
     const book = reactive({title: 'Vue 3 Guide'})
     // return {readersNumber, book}
-    return () => h('div', [readersNumber.value, book.title])
-  },
-  computed: {
-    count() {
-      return this.$store.state.count
+    // return () => h('div', [readersNumber.value, book.title])
+
+    const childRef = ref(null);
+
+    const username = ref("hfwei");
+    const password = ref("1234567890");
+
+    setTimeout(() => {
+      // username.value = "hfwei90";
+      // password.value = "12345678";
+
+      console.log(`childRef value:`, childRef.value.data);
+      // childRef.value.target.username = "hfwei90";
+      // childRef.value.target.password = "123456";
+
+      code.value = 4321;
+      disable.value = true;
+    }, 2000);
+
+    const updatePassword = (age) => {
+      password.value = age;
     }
-  },
-  mounted() {
-    // console.log(this.$store.state.count)
-    // console.log(this.$refs["a-spin"].name)
-  },
-  methods: {
-    addOne: function () {
-      this.$store.commit('showLoading')
-    },
-    addTwo: function () {
-      this.$store.commit('hideLoading')
+
+    const code = ref("1234");
+    provide("code", code);
+
+    const disable = ref(false);
+
+    const list = reactive([1, 2, 3])
+    const divs = ref([])
+
+    // 确保在每次更新之前重置ref
+    onBeforeUpdate(() => {
+      divs.value = []
+    })
+
+    return {
+      readersNumber,
+      book,
+      childRef,
+      username,
+      password,
+      updatePassword,
+      disable,
+      list,
+      divs
     }
   }
 }

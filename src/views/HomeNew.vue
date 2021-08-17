@@ -12,51 +12,32 @@
       <a-menu
           mode="inline"
           theme="dark"
-          :inline-collapsed="collapsed"
+          v-model:selected-keys="selectKeys"
           v-model:open-keys="openKeys"
-          v-model:selected-keys="selectKeys">
-        <a-menu-item key="1">
-          <template #icon>
-            <div v-if="!collapsed" style="display: flex; align-items: center">
-              <span class="material-icons">supervisor_account</span>
-            </div>
-            <div v-else>
-              <span class="material-icons" style="margin: 8px 0 0 0">supervisor_account</span>
-            </div>
-          </template>
-          <span>用户管理</span>
-        </a-menu-item>
-        <a-menu-item key="2">
-          <template #icon>
-            <div v-if="!collapsed" style="display: flex; align-items: center">
-              <span class="material-icons">face</span>
-            </div>
-            <div v-else>
-              <span class="material-icons" style="margin: 8px 0 0 0">face</span>
-            </div>
-          </template>
-          <span>角色管理</span>
-        </a-menu-item>
-        <a-menu-item key="3">
-          <template #icon>
-            <div v-if="!collapsed" style="display: flex; align-items: center">
-              <span class="material-icons">admin_panel_settings</span>
-            </div>
-            <div v-else>
-              <span class="material-icons" style="margin: 8px 0 0 0">admin_panel_settings</span>
-            </div>
-          </template>
-          <span>权限管理</span>
-        </a-menu-item>
-        <a-sub-menu key="sub1">
-          <template #icon>
-            <span class="material-icons" style="font-size: 24px">build_circle</span>
-          </template>
-          <template #title>运维管理</template>
-          <a-menu-item key="5">日志管理</a-menu-item>
-          <a-menu-item key="6">警报管理</a-menu-item>
-          <a-menu-item key="7">监控管理</a-menu-item>
-        </a-sub-menu>
+          @click="handleClick"
+          @openChange="onOpenChange">
+        <template v-for="item in menu" :key="item.key">
+          <a-menu-item v-if="!item.hasSecond" :key="item.key">
+            <template #icon>
+              <div v-if="!collapsed" style="display: flex; align-items: center">
+                <span class="material-icons">{{ item.icon }}</span>
+              </div>
+              <div v-else>
+                <span class="material-icons" style="margin: 8px 0 0 0">{{ item.icon }}</span>
+              </div>
+            </template>
+            <span>{{ item.content }}</span>
+          </a-menu-item>
+          <a-sub-menu v-else :key="item.key">
+            <template #icon>
+              <span class="material-icons" style="font-size: 24px">{{ item.icon }}</span>
+            </template>
+            <template #title>{{ item.content }}</template>
+            <a-menu-item v-for="subItem in item.sub" :key="subItem.key ">
+              {{ subItem.content }}
+            </a-menu-item>
+          </a-sub-menu>
+        </template>
       </a-menu>
     </a-layout-sider>
     <a-layout>
@@ -85,26 +66,20 @@
             <!--            <span class="material-icons">arrow_drop_down</span>-->
             <template #overlay>
               <a-menu @click="onClick">
-                <a-menu-item style="text-align: center; font-weight: bold">hfwei</a-menu-item>
-                <a-menu-divider/>
-                <a-menu-item key="0">
-                  <div class="menu-item">
-                    <span class="material-icons" style="margin: 1px 0 0">home</span>
-                    <span>返回首页</span>
-                  </div>
-                </a-menu-item>
-                <a-menu-item key="1">
-                  <div class="menu-item">
-                    <span class="material-icons" style="margin: 1px 0 0">person</span>
-                    <span>用户信息</span>
-                  </div>
-                </a-menu-item>
-                <a-menu-item key="2">
-                  <div class="menu-item">
-                    <span class="material-icons" style="font-size: 21px; margin: 2px 1px 0">cancel</span>
-                    <span>退出系统</span>
-                  </div>
-                </a-menu-item>
+                <template v-for="item in dropdownMenu" :key="item.key">
+                  <a-menu-item
+                      v-if="0===item.key"
+                      :style="item.style">
+                    {{ item.content }}
+                  </a-menu-item>
+                  <a-menu-divider v-if="0===item.key"/>
+                  <a-menu-item v-else :key="item.key">
+                    <div class="menu-item">
+                      <span class="material-icons" :style="item.style">{{ item.icon }}</span>
+                      <span>{{ item.content }}</span>
+                    </div>
+                  </a-menu-item>
+                </template>
               </a-menu>
             </template>
           </a-dropdown>
@@ -119,7 +94,7 @@
 </template>
 
 <script>
-import {reactive, watch, toRefs, ref} from "vue";
+import {reactive, toRefs, ref} from "vue";
 import {useRouter} from "vue-router";
 import {
   MenuUnfoldOutlined,
@@ -137,21 +112,142 @@ export default {
 
     const state = reactive({
       collapsed: false,
-      selectKeys: ["2"],
-      openKeys: ["sub1"],
-      preOpenKeys: ["sub1"]
+      menu: [
+        {
+          hasSecond: false,
+          key: 1,
+          icon: "supervisor_account",
+          content: "用户管理",
+          sub: []
+        },
+        {
+          hasSecond: false,
+          key: 2,
+          icon: "face",
+          content: "角色管理",
+          sub: []
+        },
+        {
+          hasSecond: false,
+          key: 3,
+          icon: "admin_panel_settings",
+          content: "权限管理",
+          sub: []
+        },
+        {
+          hasSecond: true,
+          key: "sub1",
+          icon: "build_circle",
+          content: "运维管理",
+          sub: [
+            {
+              key: 4,
+              content: "日志管理"
+            },
+            {
+              key: 5,
+              content: "警报管理"
+            },
+            {
+              key: 6,
+              content: "监控管理"
+            }]
+        },
+        {
+          hasSecond: true,
+          key: "sub2",
+          icon: "build_circle",
+          content: "待添加",
+          sub: [
+            {
+              key: 7,
+              content: "待添加"
+            },
+            {
+              key: 8,
+              content: "待添加"
+            },
+            {
+              key: 9,
+              content: "待添加"
+            }]
+        }],
+      selectKeys: [],
+      openKeys: [],
+      dropdownMenu: [
+        {
+          key: 0,
+          style: {
+            textAlign: "center",
+            fontWeight: "bold"
+          },
+          icon: "",
+          content: "hfwei"
+        },
+        {
+          key: 1,
+          style: {
+            margin: "1px 0 0"
+          },
+          icon: "home",
+          content: "返回首页"
+        },
+        {
+          key: 2,
+          style: {
+            margin: "1px 0 0"
+          },
+          icon: "person",
+          content: "用户信息"
+        },
+        {
+          key: 3,
+          style: {
+            fontSize: "21px",
+            margin: "3px 1px 0"
+          },
+          icon: "cancel",
+          content: "退出系统"
+        }]
     });
 
-    watch(
-        () => state.openKeys,
-        (val, oldVal) => {
-          state.preOpenKeys = oldVal;
-        }
-    );
+    const handleClick = (e) => {
+      console.log(`handleClick. e:`, e);
+      if (e.key <= 3) state.openKeys = [];
+    }
+
+    const onOpenChange = (openKeys) => {
+      console.log(`openKeys:`, openKeys);
+      if (openKeys.length > 1) {
+        openKeys.splice(0, openKeys.length - 1);
+      }
+    };
+
+    // watch(
+    //     () => state.openKeys,
+    //     (val, oldVal) => {
+    //       console.log(`watch openKeys. val:${val}, oldVal:${oldVal}`);
+    //       console.log(`openKeys:`,state.openKeys);
+    //       state.preOpenKeys = oldVal;
+    //     }
+    // );
 
     const toggleCollapsed = () => {
+      console.log(`toggleCollapsed. collapsed:`, state.collapsed);
+      console.log(`selectKeys:`, state.selectKeys);
       state.collapsed = !state.collapsed;
-      state.openKeys = state.collapsed ? [] : state.preOpenKeys;
+      // state.openKeys = state.collapsed ? [] : state.preOpenKeys;
+
+      if (!state.collapsed) {
+        if (0 === state.selectKeys.length || state.selectKeys[0] <= 3) {
+          state.openKeys = [];
+        } else {
+          const item = state.menu.find(item => item.hasSecond && item.sub.some(item => state.selectKeys[0] === item.key));
+          state.openKeys = [item.key];
+        }
+      } else {
+        state.openKeys = [];
+      }
     }
 
     const visible = ref(false);
@@ -159,14 +255,17 @@ export default {
     const onClick = ({key}) => {
       console.log(`onClick. key:`, key);
       visible.value = false;
-      switch (key) {
-        case "0":
+      state.selectKeys = [];
+      state.openKeys = [];
+      state.preOpenKeys = [];
+      switch (parseInt(key)) {
+        case 1:
           router.push({name: "index"});
           break
-        case "1":
+        case 2:
           router.push({name: "userInfo"});
           break
-        case "2":
+        case 3:
           break;
         default:
           break;
@@ -175,6 +274,8 @@ export default {
 
     return {
       ...toRefs(state),
+      handleClick,
+      onOpenChange,
       toggleCollapsed,
       onClick,
       visible
