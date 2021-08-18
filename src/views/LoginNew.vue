@@ -109,7 +109,7 @@ import {message} from "ant-design-vue"
 import {login} from "@/api/userApi";
 import LoginCarousel from "@/components/LoginCarousel";
 import {getCurrentInstance, onMounted, onUnmounted, reactive, ref, toRaw} from "vue";
-import {generateCode} from "../api/userApi";
+import {generateCode} from "@/api/userApi";
 import LanguageSelect from "@/components/LanguageSelect";
 import bus from "@/utils/bus";
 // import {useRoute} from "vue-router";

@@ -17,7 +17,7 @@
           @click="handleClick"
           @openChange="onOpenChange">
         <template v-for="item in menu" :key="item.key">
-          <a-menu-item v-if="!item.hasSecond" :key="item.key">
+          <a-menu-item v-if="!item.hasSubs" :key="item.key">
             <template #icon>
               <div v-if="!collapsed" style="display: flex; align-items: center">
                 <span class="material-icons">{{ item.icon }}</span>
@@ -33,7 +33,7 @@
               <span class="material-icons" style="font-size: 24px">{{ item.icon }}</span>
             </template>
             <template #title>{{ item.content }}</template>
-            <a-menu-item v-for="subItem in item.sub" :key="subItem.key ">
+            <a-menu-item v-for="subItem in item.subs" :key="subItem.key">
               {{ subItem.content }}
             </a-menu-item>
           </a-sub-menu>
@@ -94,7 +94,7 @@
 </template>
 
 <script>
-import {reactive, toRefs, ref} from "vue";
+import {reactive, toRefs, ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
 import {
   MenuUnfoldOutlined,
@@ -108,68 +108,112 @@ export default {
     MenuFoldOutlined
   },
   setup() {
+    onMounted(() => {
+      console.log(`pathMap:`, pathMap);
+      state.menu.forEach(item => {
+        if (!item.hasSubs) {
+          pathMap.set(item.key, item.path);
+          router.addRoute("home", {
+            path: `${item.path}`,
+            component: () => import(`@/${item.component}`)
+          });
+        } else {
+          item.subs.forEach(item => {
+            pathMap.set(item.key, item.path);
+            router.addRoute("home", {
+              path: `${item.path}`,
+              component: () => import(`@/${item.component}`)
+            });
+          })
+        }
+      })
+      console.log(`pathMap:`, pathMap);
+    })
+
     const router = useRouter();
 
     const state = reactive({
       collapsed: false,
       menu: [
         {
-          hasSecond: false,
+          hasSubs: false,
           key: 1,
           icon: "supervisor_account",
           content: "用户管理",
-          sub: []
+          path: "/home/userManager",
+          component: "views/home/UserManager",
+          subs: []
         },
         {
-          hasSecond: false,
+          hasSubs: false,
           key: 2,
           icon: "face",
           content: "角色管理",
-          sub: []
+          path: "/home/roleManager",
+          component: "views/home/RoleManager",
+          subs: []
         },
         {
-          hasSecond: false,
+          hasSubs: false,
           key: 3,
           icon: "admin_panel_settings",
           content: "权限管理",
-          sub: []
+          path: "/home/userManager",
+          component: "views/home/userManager",
+          subs: []
         },
         {
-          hasSecond: true,
+          hasSubs: true,
           key: "sub1",
           icon: "build_circle",
           content: "运维管理",
-          sub: [
+          path: null,
+          component: null,
+          subs: [
             {
               key: 4,
-              content: "日志管理"
+              content: "日志管理",
+              path: "/home/userManager",
+              component: "views/home/userManager"
             },
             {
               key: 5,
-              content: "警报管理"
+              content: "警报管理",
+              path: "/home/userManager",
+              component: "views/home/userManager"
             },
             {
               key: 6,
-              content: "监控管理"
+              content: "监控管理",
+              path: "/home/userManager",
+              component: "views/home/userManager"
             }]
         },
         {
-          hasSecond: true,
+          hasSubs: true,
           key: "sub2",
-          icon: "build_circle",
+          icon: "add_circle",
           content: "待添加",
-          sub: [
+          path: null,
+          component: null,
+          subs: [
             {
               key: 7,
-              content: "待添加"
+              content: "待添加",
+              path: "/home/userManager",
+              component: "views/home/userManager"
             },
             {
               key: 8,
-              content: "待添加"
+              content: "待添加",
+              path: "/home/userManager",
+              component: "views/home/userManager"
             },
             {
               key: 9,
-              content: "待添加"
+              content: "待添加",
+              path: "/home/userManager",
+              component: "views/home/userManager"
             }]
         }],
       selectKeys: [],
@@ -211,9 +255,15 @@ export default {
         }]
     });
 
+    const pathMap = new Map();
+
     const handleClick = (e) => {
       console.log(`handleClick. e:`, e);
       if (e.key <= 3) state.openKeys = [];
+      router.push({
+        path: pathMap.get(e.key)
+        // path: "/home/userManager"
+      })
     }
 
     const onOpenChange = (openKeys) => {
@@ -242,7 +292,7 @@ export default {
         if (0 === state.selectKeys.length || state.selectKeys[0] <= 3) {
           state.openKeys = [];
         } else {
-          const item = state.menu.find(item => item.hasSecond && item.sub.some(item => state.selectKeys[0] === item.key));
+          const item = state.menu.find(item => item.hasSubs && item.subs.some(item => state.selectKeys[0] === item.key));
           state.openKeys = [item.key];
         }
       } else {

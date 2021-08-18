@@ -88,12 +88,19 @@
 <script>
 import {Modal} from "ant-design-vue";
 import {CheckCircleOutlined} from "@ant-design/icons-vue";
-import {register} from "@/api/userApi";
+import {register} from "@/api/userApi"
 import LoginCarousel from "@/components/LoginCarousel";
-import {getCurrentInstance, reactive, ref, toRaw, createVNode, onMounted, onUnmounted} from "vue";
+import {
+  getCurrentInstance,
+  reactive,
+  ref,
+  toRaw,
+  createVNode,
+  onMounted,
+  onUnmounted
+} from "vue";
 import LanguageSelect from "@/components/LanguageSelect";
 import bus from "@/utils/bus";
-// import {useRouter} from "vue-router";
 
 export default {
   name: "Login",
