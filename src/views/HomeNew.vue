@@ -128,7 +128,7 @@ export default defineComponent({
         }
       })
       router.addRoute("home", {
-        path: "/home/*",
+        path: "/:pathMatch(.*)",
         redirect: "/home/index"
       });
       console.log(`pathMap:`, pathMap);

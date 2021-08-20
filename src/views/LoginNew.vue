@@ -107,7 +107,7 @@
 <script lang="ts">
 import {message} from "ant-design-vue"
 import {login} from "@/api/userApi";
-import LoginCarousel from "@/components/LoginCarousel";
+import LoginCarousel from "@/components/LoginCarousel.vue";
 import {
   defineComponent,
   getCurrentInstance,
@@ -119,8 +119,9 @@ import {
   toRaw
 } from "vue";
 import {generateCode} from "@/api/userApi";
-import LanguageSelect from "@/components/LanguageSelect";
+import LanguageSelect from "@/components/LanguageSelect.vue";
 import bus from "@/utils/bus";
+import {RuleObject} from "ant-design-vue/es/form/interface";
 
 interface LoginFormData {
   username: string;
@@ -150,7 +151,7 @@ export default defineComponent({
       bus.off("changeLanguage");
     });
 
-    const {proxy} = getCurrentInstance();
+    const {proxy}: any = getCurrentInstance();
 
     // 登录成功后是否需要redirect
     let redirect = proxy.$route.query.redirect;
@@ -163,7 +164,7 @@ export default defineComponent({
       password: proxy.$route.params.password,
       code: ''
     });
-    let checkUsername = async (rule, value) => {
+    let checkUsername = async (rule: RuleObject, value: string) => {
       console.info(`checkUsername. rule:${rule}, value:${value}`);
       if (!value) {
         return Promise.reject(proxy.$t("login.username.tip1"));
@@ -176,7 +177,7 @@ export default defineComponent({
       }
     };
     const passwordReg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,32}/;
-    let checkPassword = async (rule, value) => {
+    let checkPassword = async (rule: RuleObject, value: string) => {
       console.info(`checkPassword. rule:${rule}, value:${value}`);
       if (!value) {
         return Promise.reject(proxy.$t("login.password.tip1"));
@@ -190,7 +191,7 @@ export default defineComponent({
         return Promise.resolve();
       }
     };
-    let checkCode = async (rule, value) => {
+    let checkCode = async (rule: RuleObject, value: string) => {
       console.info(`checkCode. rule:${rule}, value:${value}`);
       if (!value) {
         return Promise.reject(proxy.$t("login.code.tip1"));
@@ -224,7 +225,7 @@ export default defineComponent({
       ],
     };
     // const codeRef = ref(null);
-    const codeUrl = ref(null);
+    const codeUrl = ref();
     // let codeUrl = ref(process.env.VUE_APP_BASE_URL + '/user/generate-verification-code?timestamp=' + new Date().getTime());
     let refreshCode = () => {
       generateCode()

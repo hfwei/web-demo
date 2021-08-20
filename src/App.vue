@@ -62,22 +62,9 @@ export default defineComponent({
 </script>
 
 <style>
-/** {*/
-/*  padding: 0;*/
-/*  margin: 0;*/
-/*}*/
-
 #app {
   width: 100%;
   height: 100%;
   overflow: hidden;
-  /*position: fixed;*/
-}
-
-.loading {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
 }
 </style>

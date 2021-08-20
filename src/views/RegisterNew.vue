@@ -26,7 +26,8 @@
                   v-model:value="registerFormData.username"
                   style="height: 40px"
                   size="large"
-                  :placeholder="$t('login.username.placeholder')">
+                  :placeholder="$t('login.username.placeholder')"
+                  allow-clear>
                 <template #prefix>
                   <span class="material-icons" style="color: #0088cc">person</span>
                 </template>
@@ -39,7 +40,8 @@
                   style="height: 40px"
                   size="large"
                   autocomplete="off"
-                  :placeholder="$t('login.password.placeholder')">
+                  :placeholder="$t('login.password.placeholder')"
+                  allow-clear>
                 <template #prefix>
                   <span class="material-icons" style="color: #0088cc; font-size: 22px">lock</span>
                 </template>
@@ -52,7 +54,8 @@
                   style="height: 40px"
                   size="large"
                   autocomplete="off"
-                  :placeholder="$t('register.tip.confirm')">
+                  :placeholder="$t('register.tip.confirm')"
+                  allow-clear>
                 <template #prefix>
                   <span class="material-icons" style="color: #0088cc; font-size: 22px">lock</span>
                 </template>
@@ -89,7 +92,7 @@
 import {Modal} from "ant-design-vue";
 import {CheckCircleOutlined} from "@ant-design/icons-vue";
 import {register} from "@/api/userApi"
-import LoginCarousel from "@/components/LoginCarousel";
+import LoginCarousel from "@/components/LoginCarousel.vue";
 import {
   defineComponent,
   getCurrentInstance,
@@ -101,8 +104,9 @@ import {
   onMounted,
   onUnmounted
 } from "vue";
-import LanguageSelect from "@/components/LanguageSelect";
+import LanguageSelect from "@/components/LanguageSelect.vue";
 import bus from "@/utils/bus";
+import {RuleObject} from "ant-design-vue/es/form/interface";
 
 interface RegisterFormData {
   username: string,
@@ -130,7 +134,7 @@ export default defineComponent({
       bus.off("changeLanguage");
     });
 
-    const {proxy} = getCurrentInstance();
+    const {proxy}: any = getCurrentInstance();
 
     // 注册
     const registerFormRef = ref();
@@ -139,7 +143,7 @@ export default defineComponent({
       password: "",
       confirmPassword: ""
     });
-    let checkUsername = async (rule, value) => {
+    let checkUsername = async (rule: RuleObject, value: string) => {
       console.info(`checkUsername. rule:${rule}, value:${value}`);
       if (!value) {
         return Promise.reject(proxy.$t("login.username.tip1"));
@@ -152,7 +156,7 @@ export default defineComponent({
       }
     };
     const passwordReg = /(?=.*\d)(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,32}/;
-    let checkPassword = async (rule, value) => {
+    let checkPassword = async (rule: RuleObject, value: string) => {
       console.info(`checkPassword. rule:${rule}, value:${value}`);
       if (!value) {
         return Promise.reject(proxy.$t("login.password.tip1"));
@@ -166,7 +170,7 @@ export default defineComponent({
         return Promise.resolve();
       }
     };
-    let confirmPassword = async (rule, value) => {
+    let confirmPassword = async (rule: RuleObject, value: string) => {
       console.info(`checkCode. rule:${rule}, value:${value}`);
       if (!value) {
         return Promise.reject(proxy.$t("login.password.tip1"));
