@@ -9,10 +9,10 @@
 </template>
 
 <script>
-import {ref} from "vue";
+import {defineComponent, ref} from "vue";
 import bus from "@/utils/bus";
 
-export default {
+export default defineComponent({
   name: "LanguageSelect",
   setup() {
     // 语言选择
@@ -23,8 +23,8 @@ export default {
     const handleChange = (value) => {
       console.info(`selected ${value}`);
       console.log(`focus. language: ${language.value}`);
-      bus.$emit("changeLanguage", value);
-      bus.$emit("setLanguage", value);
+      bus.emit("changeLanguage", value);
+      bus.emit("setLanguage", value);
     };
 
     return {
@@ -33,7 +33,7 @@ export default {
       handleChange
     };
   }
-}
+})
 </script>
 
 <style scoped>

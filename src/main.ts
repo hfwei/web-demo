@@ -7,16 +7,16 @@ import store from "@/store/store";
 import i18n from "../public/languages";
 import axios from "axios";
 // import {Base64} from "js-base64";
-import NProgress from "nprogress";
+// import NProgress from "nprogress.js";
 import "nprogress/nprogress.css"
-import "material-design-icons-iconfont/dist/material-design-icons.css"
+import "material-design-icons-iconfont/dist/material-design-icons.css";
 
 axios.defaults.withCredentials = true;
 
 router.beforeEach((to, from) => {
     console.log(`router beforeEach. to:${to}, from:${from}`);
     console.log(`router to matched:`, to.matched.length);
-    NProgress.start();
+    // NProgress.start();
     if (to.meta.requiresAuth && !store.state.isLogin) {
         return {
             path: "/login",
@@ -28,10 +28,10 @@ router.beforeEach((to, from) => {
 });
 
 router.afterEach(() => {
-    NProgress.done();
+    // NProgress.done();
 });
 
-createApp(App)
+const app: any = createApp(App)
     .use(i18n)
     .use(Antd)
     .use(router)

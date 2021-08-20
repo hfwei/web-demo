@@ -104,17 +104,31 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import {message} from "ant-design-vue"
 import {login} from "@/api/userApi";
 import LoginCarousel from "@/components/LoginCarousel";
-import {getCurrentInstance, onMounted, onUnmounted, reactive, ref, toRaw} from "vue";
+import {
+  defineComponent,
+  getCurrentInstance,
+  onMounted,
+  onUnmounted,
+  reactive,
+  ref,
+  UnwrapRef,
+  toRaw
+} from "vue";
 import {generateCode} from "@/api/userApi";
 import LanguageSelect from "@/components/LanguageSelect";
 import bus from "@/utils/bus";
-// import {useRoute} from "vue-router";
 
-export default {
+interface LoginFormData {
+  username: string;
+  password: string;
+  code: string;
+}
+
+export default defineComponent({
   name: "Login",
   components: {
     LoginCarousel,
@@ -125,7 +139,7 @@ export default {
       console.log(`Login mounted!`);
       refreshCode();
 
-      bus.$on("changeLanguage", data => {
+      bus.on("changeLanguage", data => {
         console.log(`changeLanguage. data:`, data);
         loginFormRef.value.resetFields();
       })
@@ -133,7 +147,7 @@ export default {
 
     onUnmounted(() => {
       console.log(`Login unmounted!`);
-      bus.$off("changeLanguage");
+      bus.off("changeLanguage");
     });
 
     const {proxy} = getCurrentInstance();
@@ -144,7 +158,7 @@ export default {
 
     // 登录
     const loginFormRef = ref();
-    const loginFormData = reactive({
+    const loginFormData: UnwrapRef<LoginFormData> = reactive({
       username: proxy.$route.params.username,
       password: proxy.$route.params.password,
       code: ''
@@ -285,7 +299,7 @@ export default {
       registerNewAccount
     };
   }
-}
+})
 </script>
 
 <style scoped>

@@ -85,15 +85,17 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import {Modal} from "ant-design-vue";
 import {CheckCircleOutlined} from "@ant-design/icons-vue";
 import {register} from "@/api/userApi"
 import LoginCarousel from "@/components/LoginCarousel";
 import {
+  defineComponent,
   getCurrentInstance,
   reactive,
   ref,
+  UnwrapRef,
   toRaw,
   createVNode,
   onMounted,
@@ -102,7 +104,13 @@ import {
 import LanguageSelect from "@/components/LanguageSelect";
 import bus from "@/utils/bus";
 
-export default {
+interface RegisterFormData {
+  username: string,
+  password: string,
+  confirmPassword: string;
+}
+
+export default defineComponent({
   name: "Login",
   components: {
     LoginCarousel,
@@ -111,7 +119,7 @@ export default {
   setup() {
     onMounted(() => {
       console.log(`Register mounted!`);
-      bus.$on("changeLanguage", data => {
+      bus.on("changeLanguage", data => {
         console.log(`changeLanguage. data:`, data);
         registerFormRef.value.resetFields();
       })
@@ -119,14 +127,14 @@ export default {
 
     onUnmounted(() => {
       console.log(`Register unmounted!`);
-      bus.$off("changeLanguage");
+      bus.off("changeLanguage");
     });
 
     const {proxy} = getCurrentInstance();
 
     // 注册
     const registerFormRef = ref();
-    const registerFormData = reactive({
+    const registerFormData: UnwrapRef<RegisterFormData> = reactive({
       username: "",
       password: "",
       confirmPassword: ""
@@ -253,7 +261,7 @@ export default {
       goLoginPage
     };
   },
-}
+})
 </script>
 
 <style scoped>

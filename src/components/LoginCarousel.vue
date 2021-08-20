@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import {ref} from "vue";
+import {defineComponent, ref} from "vue";
 
-export default {
+export default defineComponent({
   name: "LoginCarousel",
   setup() {
     const images = ref([
@@ -21,7 +21,7 @@ export default {
     ])
     return {images}
   }
-}
+})
 </script>
 
 <style scoped>

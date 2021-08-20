@@ -94,14 +94,14 @@
 </template>
 
 <script>
-import {reactive, toRefs, ref, onMounted} from "vue";
+import {defineComponent, reactive, toRefs, ref, onMounted} from "vue";
 import {useRouter} from "vue-router";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined
 } from "@ant-design/icons-vue";
 
-export default {
+export default defineComponent({
   name: "HomeNew",
   components: {
     MenuUnfoldOutlined,
@@ -127,6 +127,10 @@ export default {
           })
         }
       })
+      router.addRoute("home", {
+        path: "/home/*",
+        redirect: "/home/index"
+      });
       console.log(`pathMap:`, pathMap);
     })
 
@@ -331,7 +335,7 @@ export default {
       visible
     }
   }
-}
+})
 </script>
 
 <style scoped>

@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import {inject, ref} from "vue";
+import {defineComponent, inject, ref} from "vue";
 
-export default {
+export default defineComponent({
   name: "TestComponent",
   props: [
     "username",
@@ -43,7 +43,7 @@ export default {
       code
     }
   }
-}
+})
 </script>
 
 <style scoped>
